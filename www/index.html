@@ -6,36 +6,57 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>bootstrap</title>
-<!-- 新 Bootstrap 核心 CSS 文件 -->
+<title>WhenWhere</title>
 <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
-
-<!-- 可选的Bootstrap主题文件（一般不用引入） -->
-<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
-<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 <!--[if lt IE 9]>
 <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
 <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
 <body>
-<h1>bootstrap 学习</h1>
 
-<form class="form-inline">
-    <div class="form-group">
-        <label class="sr-only" for="exampleInputAmount">Amount (in dollars)</label>
-        <div class="input-group">
-            <div class="input-group-addon">$</div>
-            <input type="text" class="form-control" id="exampleInputAmount" placeholder="Amount">
-            <div class="input-group-addon">.00</div>
-        </div>
-    </div>
-    <button type="submit" class="btn btn-primary">Transfer cash</button>
-</form>
-<!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
 <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
-<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
 <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script src="js/model.js"></script>
+<script>
+//js for test
+//Delete me after finished
+var au={
+	pid:1,
+	nickname:'myname',
+	phone:'123',
+	hostParty:[],
+	attendParty:[]
+};
+var au2={
+	pid:2,
+	nickname:'heranme',
+	phone:'555',
+	hostParty:[],
+	attendParty:[]
+};
+var u=new M.User;
+u.fromJson(au);
+console.log(u);
+var u2=new M.User;
+u2.fromJson(au2);
+console.log(u2);
+var ap={
+	pid:1,
+	title:'aaa',
+	describe:'ddd',
+	member:[u,u2],
+	createDate:new Date(),
+	author:{},
+	updateDate:new Date(),
+	when:[],
+	where:[]
+};
+console.log(ap);
+var p=new M.Party;
+p.fromJson(ap);
+console.log(p);
+console.log(p.toJsonStr());
+</script>
 </body>
 </html>
