@@ -42,6 +42,7 @@
 		this.updateDate = null;		//最后修改时间
 		this.when = [];				//拟聚会日期
 		this.where = [];			//拟聚会地点
+		this.isClose = false;		//是否已关闭
 	};
 	Party.prototype = new BaseModelClass();
 
