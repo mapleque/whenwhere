@@ -8,67 +8,160 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>WhenWhere</title>
 <link rel="stylesheet" href="css/bootstrap.min.css">
+<link rel="stylesheet" href="css/party.css">
 <!--[if lt IE 9]>
 <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
 <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
 <body>
-<div id="test-dom"></div>
+<header>
+	<nav class="navbar navbar-default">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#header-nav" aria-expanded="false">
+					<span class="sr-only">导航栏</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="#/">WhenWhere</a>
+			</div>
+
+			<div class="collapse navbar-collapse" id="header-nav">
+				<ul class="nav navbar-nav">
+					<li><a href="#/party"><i class="glyphicon glyphicon-edit" aria-hidden="true"></i></a></li>
+					<li><a href="#/list"><i class="glyphicon glyphicon-th-list" aria-hidden="true"></i></a></li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<li><a href="/"><i class="glyphicon glyphicon-user"></i></a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+</header>
+<div id="party-list-root" class="container"></div>
+<div id="party-root" class="container"></div>
+<script id="party-list-template" type="text/html">
+	<% if (data){%>
+		<div><%=data%></div>
+	<%} else {%>
+		<div class="load-empty"><div>
+	<%}%>
+</script>
+<script id="party-template" type="text/html">
+	<div>
+		<form class="form-horizontal" onsubmit="return false;">
+			<%if (data.pid){%>
+				<input name="pid" type="hidden" value="<%=data.pid?data.pid:''%>">
+				<div class="form-group">
+					<div class="col-sm-offset-2 col-sm-10">
+						<h2 class="form-control-static">我想参加这个聚会</h2>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-2 control-label">噱头</label>
+					<div class="col-sm-10">
+						<input name="title" type="text" class="form-control" placeholder="just give me a title" disabled value="<%=data.title%>">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-2 control-label">谁要来</label>
+					<div class="col-sm-10 form-control-static">
+						<%_.each(data.member,function(item){%>
+							<span><%=item%></span>
+						<%})%>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-2 control-label">Where</label>
+					<div class="col-sm-10">
+						<input name="when" class="form-control" type="text" disabled placeholder="请选择一个喜欢的地方">
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-offset-2 col-sm-10">
+						<%_.each(data.where,function(item){%>
+							<div class="checkbox">
+								<label>
+									<input type="checkbox" value="<%=item%>">
+									<%=item%>
+								</label>
+							</div>
+						<%})%>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-2 control-label">When</label>
+					<div class="col-sm-10">
+						<input name="when" class="form-control" type="text" disabled placeholder="请选择自己方便的时间">
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-offset-2 col-sm-10">
+						<div class="col-sm-10" for="when" when-picker>This is the component for date picker</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-offset-2 col-sm-10">
+						<button type="submit" class="btn btn-default">我要参加</button>
+					</div>
+				</div>
+			<%}else{%>
+				<div class="form-group">
+					<div class="col-sm-offset-2 col-sm-10">
+						<h2 class="form-control-static">我想发起一个聚会</h2>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-2 control-label">噱头</label>
+					<div class="col-sm-10">
+						<input name="title" type="text" class="form-control" placeholder="请给聚会找个借口">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-2 control-label">Where</label>
+					<div id="where-root">
+						<div class="input-group col-sm-10">
+							<span name="add-where" class="input-group-addon btn btn-default"><i class="glyphicon glyphicon-plus"></i></span>
+							<input name="where" class="form-control" type="text" placeholder="请给聚会找个地方">
+						</div>
+					</div>
+				</div>
+				<div id="where-more" style="display:none">
+					<div class="form-group">
+						<div class="input-group col-sm-offset-2 col-sm-10">
+							<span name="del-where" class="input-group-addon btn btn-default"><i class="glyphicon glyphicon-minus"></i></span>
+							<input name="where" class="form-control" type="text">
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-2 control-label">When</label>
+					<div class="col-sm-10">
+						<input name="when" class="form-control" type="text" disabled placeholder="请给聚会安排个时间">
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-offset-2 col-sm-10">
+						<div class="col-sm-10" for="when" when-picker>This is the component for date picker</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-offset-2 col-sm-10">
+						<button type="submit" class="btn btn-default">就这么定了</button>
+					</div>
+				</div>
+			<%}%>
+		</form>
+	</div>
+</script>
 <script src="js/jquery.min.js"></script>
 <script src="js/underscore.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <script src="js/model.js"></script>
 <script src="js/view.js"></script>
-<script id="test-template" type="text/html">
-	<div><%=a%>:<%=b%></div>
-</script>
-<script>
-//js for test
-//Delete me after finished
-var au={
-	pid:1,
-	nickname:'myname',
-	phone:'123',
-	hostParty:[],
-	attendParty:[]
-};
-var au2={
-	pid:2,
-	nickname:'heranme',
-	phone:'555',
-	hostParty:[],
-	attendParty:[]
-};
-var u=new M.User;
-u.fromJson(au);
-console.log(u);
-var u2=new M.User;
-u2.fromJson(au2);
-console.log(u2);
-var ap={
-	pid:1,
-	title:'aaa',
-	describe:'ddd',
-	member:[u,u2],
-	createDate:new Date(),
-	author:{},
-	updateDate:new Date(),
-	when:[],
-	where:[]
-};
-console.log(ap);
-var p=new M.Party;
-p.fromJson(ap);
-console.log(p);
-console.log(p.toJsonStr());
-
-var lv=new V.List();
-lv.init($('#test-dom'),$('#test-template'),{a:'key',b:'value'});
-lv.render();
-var cd=function(){
-	lv.setData({a:'newkey',b:'newvalue'});
-}
-</script>
+<script src="js/service.js"></script>
+<script src="js/controller.js"></script>
 </body>
 </html>
