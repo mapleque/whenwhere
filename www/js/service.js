@@ -1,6 +1,32 @@
 (function(){
 	'use strict';
 	var S = window.S ={};
+
+	var post = S.post= function(api, param, callback){
+		if (typeof param == 'function' && callback === undefined){
+			callback = param;
+			param = {};
+		}
+		$.get('../api/' + api + '.php', param, function(res){
+			if (res.status == 0){
+				console.log('[rec]:',res.data);
+				callback(res.data);
+			}else{
+				console.log('[req]:',api,'[rec]:',res);
+				callback();
+			}
+		},'json');
+	};
+
+	/**
+	 * @return party_key:str
+	 */
+	S.getPartyKey = function(callback){
+		post('new_party_key',function(res){
+			callback(res.key);
+		});
+	};
+
 	/**
 	 * @param
 	 *		userid
@@ -10,7 +36,7 @@
 	 *			attend:[Party]
 	 *		}
 	 */
-	S.getPartyList = function(userid){
+	S.getPartyList = function(userid, callback){
 	};
 
 	/**
@@ -19,21 +45,17 @@
 	 * @return
 	 *		Party
 	 */
-	S.getParty = function(partyid,userid){
+	S.getParty = function(partyid, userid, callback){
 		if (partyid){
-			var party = new M.Party();
-			party.fromJson({
-				pid:1,
-				title:'小伙伴来玩耍',
-				describe:'',
-				member:['赵小七','王小北','西门林'],
-				createDate:new Date(),
-				author:'',
-				updateDate:new Date(),
-				when:[],
-				where:['什刹海','三里屯','东土大唐去往西天取经所经过的女儿国','花果山福地，水帘洞洞天']
+			post('get_party',{key:partyid},function(res){
+				if (res){
+					var party = new M.Party();
+					party.fromJson(JSON.parse(res.one_value));
+					callback(party);
+				}else{
+					callback();
+				}
 			});
-			return party;
 		}
 	};
 
@@ -47,7 +69,12 @@
 	 * @return
 	 *		boolean
 	 */
-	S.setParty = function(party){
+	S.setParty = function(party, callback){
+		if (party && party.pid){
+			post('set_party',{key:party.pid,value:party.toJsonStr()},function(res){
+				callback(res);
+			});
+		}
 	};
 
 	/**

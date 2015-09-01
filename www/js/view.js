@@ -14,7 +14,7 @@
 		this.$template=[];		//the template dom
 		this.data=[];			//the data to render
 	};
-	BaseViewClass.prototype.addEventListener = function(){}
+	BaseViewClass.prototype.addEventListener = function(){};
 	BaseViewClass.prototype.render = function(){//渲染页面
 		this.$rootDom.html(_.template((this.$template).html())({data:this.data}));
 		this.addEventListener();
@@ -54,17 +54,5 @@
 	var Party= V.Party= function(){
 	};
 	Party.prototype = new BaseViewClass();
-	
-	//@Override
-	Party.prototype.addEventListener = function(){
-		$('span[name=add-where]').click(function(){
-			var inputhtml=$('#where-more').html();
-			$('#where-root').parent().after(inputhtml);
-		});
-		$('form').delegate('span[name=del-where]','click',function(){
-			$(this).parent().parent().remove();
-		});
-	}
-
 
 })();

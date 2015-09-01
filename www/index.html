@@ -51,8 +51,8 @@
 </script>
 <script id="party-template" type="text/html">
 	<div>
-		<form class="form-horizontal" onsubmit="return false;">
-			<%if (data.pid){%>
+		<%if (data.pid){%>
+			<form id="attend-form" class="form-horizontal" onsubmit="return false;">
 				<input name="pid" type="hidden" value="<%=data.pid?data.pid:''%>">
 				<div class="form-group">
 					<div class="col-sm-offset-2 col-sm-10">
@@ -107,7 +107,9 @@
 						<button type="submit" class="btn btn-default">我要参加</button>
 					</div>
 				</div>
-			<%}else{%>
+			</form>
+		<%}else{%>
+			<form id="create-form" class="form-horizontal" onsubmit="return false;">
 				<div class="form-group">
 					<div class="col-sm-offset-2 col-sm-10">
 						<h2 class="form-control-static">我想发起一个聚会</h2>
@@ -152,8 +154,8 @@
 						<button type="submit" class="btn btn-default">就这么定了</button>
 					</div>
 				</div>
-			<%}%>
-		</form>
+			</form>
+		<%}%>
 	</div>
 </script>
 <script src="js/jquery.min.js"></script>

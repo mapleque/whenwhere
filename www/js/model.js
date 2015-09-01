@@ -22,7 +22,7 @@
 		var str=[];
 		str.push(this.getFullYear());
 		str.push(this.getMonth()<9?'0'+(this.getMonth()+1):(this.getMonth()+1));
-		str.push(this.getDate());
+		str.push((this.getDate()<10?'0':'') + this.getDate());
 		return str.join('-');
 	}
 

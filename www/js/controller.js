@@ -31,12 +31,52 @@
 	 *		pid => party id
 	 */
 	var showParty = C.showParty = function(param){
-		var partyView = new V.Party();
-		partyView.init($('#party-root'),$('#party-template'),{});
-		if (param.pid){
-			var party = S.getParty(param.pid, param.uid);
-			partyView.setData(party);
+		if (!param.pid){
+			S.getPartyKey(function(res){
+				
+				window.location.hash = '#/party?pid='+res;
+			});
+			return;
 		}
+		var partyView = new V.Party();
+		partyView.addEventListener = function(){
+			//增加地点输入框
+			$('#create-form').delegate('span[name=add-where]','click',function(){
+				var inputhtml=$('#where-more').html();
+				$('#where-root').parent().after(inputhtml);
+			});
+			//减少地点输入框
+			$('#create-form').delegate('span[name=del-where]','click',function(){
+				$(this).parent().parent().remove();
+			});
+			$('#create-form').on('submit',function(){
+				var party = new M.Party();
+				party.pid = param.pid;
+				party.title = $('input[name=title]').val();
+				party.describe = '';
+				party.createDate = new Date();
+				party.author = param.uid;
+				party.updateDate = new Date();
+				party.when= $('input[name=when]').val();
+				party.where = [];
+				$('input[name=where]').each(function(i,e){
+					if ($(e).val()!=''){
+						party.where.push($(e).val());
+					}
+				});
+
+				S.setParty(party,function(res){
+					console.log(res);
+				});
+			});
+		};
+		partyView.init($('#party-root'),$('#party-template'),{});
+
+		S.getParty(param.pid, param.uid, function(party){
+			if (party){
+				partyView.setData(party);
+			}
+		});
 	};
 
 	/**
