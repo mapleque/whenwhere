@@ -17,9 +17,24 @@
 			}
 		},'json');
 	};
+	/**
+	 * @param
+	 *	user => {
+	 *		username
+	 *		password
+	 *	}
+	 */
+	S.login = function(user,callback){
+		post('login',{
+				username:user.username,
+				password:user.password
+			},function(res){
+				callback(res);
+			});
+	};
 
 	/**
-	 * @return party_key:str
+	 * @callback party_key:str
 	 */
 	S.getPartyKey = function(callback){
 		post('new_party_key',function(res){
@@ -28,15 +43,13 @@
 	};
 
 	/**
-	 * @param
-	 *		userid
-	 * @return 
+	 * @callback
 	 *		{
 	 *			host:[Party],
 	 *			attend:[Party]
 	 *		}
 	 */
-	S.getPartyList = function(userid, callback){
+	S.getPartyList = function(callback){
 		post('get_party_list',{uid:userid},function(res){
 			if (res){
 				var ret=[];
@@ -59,7 +72,7 @@
 	 * @return
 	 *		Party
 	 */
-	S.getParty = function(partyid, userid, callback){
+	S.getParty = function(partyid, callback){
 		if (partyid){
 			post('get_party',{key:partyid},function(res){
 				if (res){

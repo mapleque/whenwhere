@@ -13,6 +13,20 @@
 	};
 
 	/** 以下是自定义视图载入方法及交互 **/
+	var login = C.login = function(param){
+		var loginView = new V.Common();
+		loginView.addEventListener = function(){
+			$('#login-form').on('submit',function(){
+				var user = new M.User();
+				user.username = $('input[name=username]').val();
+				user.password = $('input[name=password]').val();
+				S.login(user,function(res){
+					window.location.hash="#/list";
+				});
+			});
+		};
+		loginView.init($('#content'),$('#login-template'),{});
+	};
 
 	/**
 	 * @param
@@ -87,6 +101,7 @@
 	 * 例如：//somehost/#view?id=someid
 	 */
 	var route = C.route = {
+		'login':login,
 		'list':showList,
 		'party':showParty
 	};

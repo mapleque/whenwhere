@@ -53,6 +53,8 @@
 	 */
 	var User = M.User = function(){
 		this.pid = null;			//pid
+		this.username = null;		//username
+		this.password = null;		//password
 		this.nickname = null;		//昵称
 		this.phone = null;			//电话
 		this.hostParty = [];		//发起的聚会列表

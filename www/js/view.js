@@ -43,6 +43,13 @@
 	var V = window.V = {};
 
 	/**
+	 * common view
+	 */
+	var Common = V.Common= function(){
+	};
+	Common.prototype = new BaseViewClass();
+
+	/**
 	 * list view
 	 */
 	var List = V.List = function(){

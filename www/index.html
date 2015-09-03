@@ -42,6 +42,32 @@
 	</nav>
 </header>
 <div id="content" class="container"></div>
+<script id="login-template" type="text/html">
+	<div id="login-form" class="login-form">
+		<form id="" class="form-horizontal" onsubmit="return false;">
+			<div class="form-group">
+				<label class="col-sm-4 control-label">用户名</label>
+				<div class="col-sm-8">
+					<input name="username" type="text" class="form-control" placeholder="username">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-4 control-label">密码</label>
+				<div class="col-sm-8">
+					<input name="password" type="password" class="form-control" placeholder="password">
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-offset-4 col-sm-4">
+					<button type="submit" class="btn btn-default">登陆</button>
+				</div>
+				<div class="col-sm-4 btn-regist">
+					<a href="#/regist" role="button" class="btn btn-success">注册</a>
+				</div>
+			</div>
+		</form>
+	</div>
+</script>
 <script id="party-list-template" type="text/html">
 	<div>
 		<ul class="nav nav-pills">

@@ -1,3 +1,10 @@
 .input-group[class*=col-]{
 	padding:0 15px;
 }
+.login-form{
+	max-width:400px;
+	margin:auto;
+}
+.btn-regist{
+	text-align:right;
+}
