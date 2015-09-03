@@ -20,9 +20,11 @@
 	 */
 	var showList = C.showList = function(param){
 		var partyListView = new V.List();
-		partyListView.init($('#party-list-root'),$('#party-list-template'),{});
-		var partyList = S.getPartyList(param.uid);
-		partyListView.setData(partyList);
+		partyListView.init($('#content'),$('#party-list-template'),{});
+		S.getPartyList(param.uid,function(res){
+			var partyList=res;
+			partyListView.setData(partyList);
+		});
 	};
 
 	/**
@@ -53,7 +55,7 @@
 				var party = new M.Party();
 				party.pid = param.pid;
 				party.title = $('input[name=title]').val();
-				party.describe = '';
+				party.describe = $('textarea[name=describe]').val();
 				party.createDate = new Date();
 				party.author = param.uid;
 				party.updateDate = new Date();
@@ -66,11 +68,12 @@
 				});
 
 				S.setParty(party,function(res){
+					window.location.hash="#/list";
 					console.log(res);
 				});
 			});
 		};
-		partyView.init($('#party-root'),$('#party-template'),{});
+		partyView.init($('#content'),$('#party-template'),{});
 
 		S.getParty(param.pid, param.uid, function(party){
 			if (party){

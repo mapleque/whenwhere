@@ -3,10 +3,8 @@
 require __DIR__ . '/../core/base.php';
 
 $req = Base::getRequestJson();
-//TODO: 参数检验
 
-$uid = User::getUserId();
-if (Party::setOne($req->key, $uid, $req->value)) {
+if (User::setOne(md5(time()), $req->username, $req->password, $req->value)) {
 	Base::dieWithResponse();
 } else {
 	Base::dieWithError(ERROR_INTERNAL);

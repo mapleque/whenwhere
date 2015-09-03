@@ -37,6 +37,20 @@
 	 *		}
 	 */
 	S.getPartyList = function(userid, callback){
+		post('get_party_list',{uid:userid},function(res){
+			if (res){
+				var ret=[];
+				var list=res;
+				for (var i = 0; i<list.length; i++){
+					var party = new M.Party();
+					party.fromJson(JSON.parse(list[i].one_value));
+					ret.push(party);
+				}
+				callback(ret);
+			}else{
+				callback();
+			}
+		});
 	};
 
 	/**

@@ -3,15 +3,26 @@
 require __DIR__ . '/../core/base.php';
 
 $req = Base::getRequestJson();
-
 //TODO: 参数检验
 
-if (!isset($req->start)) {
-	$ret = Party::getOneList();
-} else if (!isset($req->num)) {
-	$ret = Party::getOneList($req->start);
+$uid = User::getUserId();
+
+if (isset($req->attend)) {
+	if (!isset($req->start)) {
+		$ret = Party::getAttendList($uid);
+	} else if (!isset($req->num)) {
+		$ret = Party::getAttendList($uid, $req->start);
+	} else {
+		$ret = Party::getAttendList($uid, $req->start, $req->num);
+	}
 } else {
-	$ret = Party::getOneList($req->start, $req->num);
+	if (!isset($req->start)) {
+		$ret = Party::getHostList($uid);
+	} else if (!isset($req->num)) {
+		$ret = Party::getHostList($uid, $req->start);
+	} else {
+		$ret = Party::getHostList($uid, $req->start, $req->num);
+	}
 }
 
 Base::dieWithResponse($ret);
