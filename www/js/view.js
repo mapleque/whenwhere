@@ -17,6 +17,7 @@
 	BaseViewClass.prototype.addEventListener = function(){};
 	BaseViewClass.prototype.render = function(){//渲染页面
 		this.$rootDom.html(_.template((this.$template).html())({data:this.data}));
+		P.init(this.$rootDom);
 		this.addEventListener();
 
 	};
