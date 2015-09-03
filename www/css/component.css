@@ -7,7 +7,7 @@
 	-webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
 	-o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
 	transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
-	min-width:334px;
+	min-width:290px;
 }
 .cal-header{
 	border-bottom:1px solid #ccc;
@@ -15,6 +15,9 @@
 	padding:0;
 	text-align:center;
 	border-radius:4px;
+}
+.cal-month-change{
+	color:#555;
 }
 .cal-body{
 	background:#eee;
@@ -25,7 +28,9 @@
 }
 .cal-ele{
 	display:inline-block;
-	min-width:42px;
+	padding-left:9px;
+	padding-right:9px;
+	min-width:36px;
 }
 .cal-ele.weekend{
 	color:red;
