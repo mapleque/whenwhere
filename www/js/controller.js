@@ -10,6 +10,7 @@
 	 * 这是默认视图载入方法，必须有定义,可以不实现
 	 */
 	var showIndex = C.showIndex = function(param){
+		window.location.hash='#/list';
 	};
 
 	/** 以下是自定义视图载入方法及交互 **/
@@ -28,6 +29,28 @@
 		loginView.init($('#content'),$('#login-template'),{});
 	};
 
+	var logout = C.logout = function(){
+		S.logout();
+		window.location.hash='#/';
+	}
+
+	var regist = C.regist = function(param){
+		var registView = new V.Common();
+		registView.addEventListener = function(){
+			$('#regist-form').on('submit',function(){
+				var user = new M.User();
+				user.username = $('input[name=username]').val();
+				user.password = $('input[name=password]').val();
+				S.regist(user,function(res){
+					alert('注册成功，请登陆');
+					window.location.hash='#/login';
+				});
+
+			});
+		};
+		registView.init($('#content'),$('#regist-template'));
+	}
+
 	/**
 	 * @param
 	 *		uid => user id
@@ -35,10 +58,17 @@
 	var showList = C.showList = function(param){
 		var partyListView = new V.List();
 		partyListView.init($('#content'),$('#party-list-template'),{});
-		S.getPartyList(param.uid,function(res){
-			var partyList=res;
-			partyListView.setData(partyList);
-		});
+		if (param.attend){
+			S.getAttendPartyList(function(res){
+				var partyList=res;
+				partyListView.setData({tab:'attend',list:partyList,len:partyList?partyList.length:0});
+			});
+		}else{
+			S.getHostPartyList(function(res){
+				var partyList=res;
+				partyListView.setData({tab:'host',list:partyList,len:partyList?partyList.length:0});
+			});
+		}
 	};
 
 	/**
@@ -71,7 +101,6 @@
 				party.title = $('input[name=title]').val();
 				party.describe = $('textarea[name=describe]').val();
 				party.createDate = new Date();
-				party.author = param.uid;
 				party.updateDate = new Date();
 				party.when= $('input[name=when]').val();
 				party.where = [];
@@ -87,11 +116,19 @@
 				});
 			});
 		};
-		partyView.init($('#content'),$('#party-template'),{});
 
-		S.getParty(param.pid, param.uid, function(party){
+		S.getParty(param.pid, function(party){
 			if (party){
+				if (window.uid && window.uid == party.author){
+					partyView.init($('#content'),$('#assume-party-template'),{});
+				}else{
+					partyView.init($('#content'),$('#attend-party-template'),{});
+				}
 				partyView.setData(party);
+			}else if (window.uid){
+				partyView.init($('#content'),$('#create-party-template'),{});
+			}else{
+				partyView.init($('#content'),$('#error-template'),{msg:'这个聚会不存在,登陆后可以创建新的聚会'});
 			}
 		});
 	};
@@ -102,6 +139,8 @@
 	 */
 	var route = C.route = {
 		'login':login,
+		'logout':logout,
+		'regist':regist,
 		'list':showList,
 		'party':showParty
 	};

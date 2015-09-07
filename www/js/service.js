@@ -2,6 +2,23 @@
 	'use strict';
 	var S = window.S ={};
 
+	var dealWithResponse = function(code){
+		switch (code){
+			case 401:
+				window.location.hash='#/login';
+				break;
+			case 403:
+				alert('登陆失败');
+				break;
+			case 2:
+				alert("内部错误");
+				break;
+			case 3:
+				alert("非法请求："+code);
+				break;
+		}
+	};
+
 	var post = S.post= function(api, param, callback){
 		if (typeof param == 'function' && callback === undefined){
 			callback = param;
@@ -13,7 +30,7 @@
 				callback(res.data);
 			}else{
 				console.log('[req]:',api,'[rec]:',res);
-				callback();
+				dealWithResponse(res.status);
 			}
 		},'json');
 	};
@@ -29,6 +46,21 @@
 				username:user.username,
 				password:user.password
 			},function(res){
+				window.uid = res.uid;
+				callback(res);
+			});
+	};
+	
+	S.logout = function(user,callback){
+		post('logout');
+	};
+
+	S.regist = function(user, callback){
+		post('regist',{
+				username:user.username,
+				password:user.password,
+				value:user
+			},function(res){
 				callback(res);
 			});
 	};
@@ -37,20 +69,22 @@
 	 * @callback party_key:str
 	 */
 	S.getPartyKey = function(callback){
-		post('new_party_key',function(res){
-			callback(res.key);
+		post('get_userid',function(data){
+			window.uid = data.uid;
+			post('new_party_key',function(res){
+				callback(res.key);
+			});
 		});
 	};
 
 	/**
 	 * @callback
 	 *		{
-	 *			host:[Party],
-	 *			attend:[Party]
+	 *			[Party]
 	 *		}
 	 */
-	S.getPartyList = function(callback){
-		post('get_party_list',{uid:userid},function(res){
+	S.getHostPartyList = function(callback){
+		post('get_party_list',function(res){
 			if (res){
 				var ret=[];
 				var list=res;
@@ -65,6 +99,30 @@
 			}
 		});
 	};
+
+	/**
+	 * @callback
+	 *		{
+	 *			[Party]
+	 *		}
+	 */
+	S.getAttendPartyList = function(callback){
+		post('get_party_list',{attend:true},function(res){
+			if (res){
+				var ret=[];
+				var list=res;
+				for (var i = 0; i<list.length; i++){
+					var party = new M.Party();
+					party.fromJson(JSON.parse(list[i].one_value));
+					ret.push(party);
+				}
+				callback(ret);
+			}else{
+				callback();
+			}
+		});
+	};
+
 
 	/**
 	 * @param
@@ -98,9 +156,14 @@
 	 */
 	S.setParty = function(party, callback){
 		if (party && party.pid){
-			post('set_party',{key:party.pid,value:party.toJsonStr()},function(res){
-				callback(res);
-			});
+			if (window.uid){
+				party.author = window.uid;
+				post('set_party',{key:party.pid,value:party.toJsonStr()},function(res){
+					callback(res);
+				});
+			}else{
+				window.location.hash='#/login';
+			}
 		}
 	};
 

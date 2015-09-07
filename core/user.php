@@ -6,9 +6,10 @@ class User
 	{
 		session_start();
 		$uid = $_SESSION['uid'];
-		if (self::isExist($uid))
+		if (self::isExist($uid)){
 			return $uid;
-		Base::dieWithError(ERROR_INTERNAL);
+		}
+		Base::dieWithError(ERROR_NOT_LOGIN);
 	}
 	public static function login($username, $password)
 	{

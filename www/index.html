@@ -35,13 +35,16 @@
 					<li><a href="#/list"><i class="glyphicon glyphicon-th-list" aria-hidden="true"></i></a></li>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
-					<li><a href="/"><i class="glyphicon glyphicon-user"></i></a></li>
+					<li><a href="#/logout"><i class="glyphicon glyphicon-user"></i></a></li>
 				</ul>
 			</div>
 		</div>
 	</nav>
 </header>
 <div id="content" class="container"></div>
+<script id="error-template" type="text/html">
+	<div><%=data.msg%></div>
+</script>
 <script id="login-template" type="text/html">
 	<div id="login-form" class="login-form">
 		<form id="" class="form-horizontal" onsubmit="return false;">
@@ -68,16 +71,39 @@
 		</form>
 	</div>
 </script>
+<script id="regist-template" type="text/html">
+	<div id="regist-form" class="regist-form">
+		<form id="" class="form-horizontal" onsubmit="return false;">
+			<div class="form-group">
+				<label class="col-sm-4 control-label">用户名</label>
+				<div class="col-sm-4">
+					<input name="username" type="text" class="form-control" placeholder="username">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-4 control-label">密码</label>
+				<div class="col-sm-4">
+					<input name="password" type="password" class="form-control" placeholder="password">
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-offset-4 col-sm-4">
+					<button type="submit" class="btn btn-default">提交</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</script>
 <script id="party-list-template" type="text/html">
 	<div>
 		<ul class="nav nav-pills">
-			<li role="presentation" class="active"><a href="javascript:;">我参与的</a></li>
-			<li role="presentation" class=""><a href="javascript:;">我发起的</a></li>
+			<li role="presentation" class="<%=data.tab=='attend'?'active':''%>"><a href="#/list?attend=true">我参与的</a></li>
+			<li role="presentation" class="<%=data.tab=='host'?'active':''%>"><a href="#/list">我发起的</a></li>
 		</ul>
-	<% if (data){%>
+	<% if (data.len > 0){%>
 		<div class="">
 			<div class="list-group">
-			<%_.map(data,function(e,i){%>
+			<%_.map(data.list,function(e,i){%>
 				<a href="#/party?pid=<%=e.pid%>" class="list-group-item">
 					<h4 class="list-group-item-heading"><%=e.title%></h4>
 					<p class="list-group-item-text"><%=e.describe%></p>
@@ -86,123 +112,129 @@
 			</div>
 		</div>
 	<%} else {%>
-		<div class="load-empty"><div>
+		<div class="load-empty">还没有聚会<div>
 	<%}%>
 	</div>
 </script>
-<script id="party-template" type="text/html">
+<script id="attend-party-template" type="text/html">
 	<div>
-		<%if (data.pid){%>
-			<form id="attend-form" class="form-horizontal" onsubmit="return false;">
-				<input name="pid" type="hidden" value="<%=data.pid?data.pid:''%>">
-				<div class="form-group">
-					<div class="col-sm-offset-2 col-sm-10">
-						<h2 class="form-control-static">我想参加这个聚会</h2>
-					</div>
+		<form id="attend-form" class="form-horizontal" onsubmit="return false;">
+			<input name="pid" type="hidden" value="<%=data.pid?data.pid:''%>">
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10">
+					<h2 class="form-control-static">我想参加这个聚会</h2>
 				</div>
-				<div class="form-group">
-					<label class="col-sm-2 control-label">噱头</label>
-					<div class="col-sm-10">
-						<input name="title" type="text" class="form-control" placeholder="just give me a title" disabled value="<%=data.title%>">
-					</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-2 control-label">噱头</label>
+				<div class="col-sm-10">
+					<input name="title" type="text" class="form-control" placeholder="just give me a title" disabled value="<%=data.title%>">
 				</div>
-				<div class="form-group">
-					<label class="col-sm-2 control-label">谁要来</label>
-					<div class="col-sm-10 form-control-static">
-						<%_.each(data.member,function(item){%>
-							<span><%=item%></span>
-						<%})%>
-					</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-2 control-label">谁要来</label>
+				<div class="col-sm-10 form-control-static">
+					<%_.each(data.member,function(item){%>
+						<span><%=item%></span>
+					<%})%>
 				</div>
-				<div class="form-group">
-					<label class="col-sm-2 control-label">Where</label>
-					<div class="col-sm-10">
-						<input name="when" class="form-control" type="text" disabled placeholder="请选择一个喜欢的地方">
-					</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-2 control-label">Where</label>
+				<div class="col-sm-10">
+					<input name="when" class="form-control" type="text" disabled placeholder="请选择一个喜欢的地方">
 				</div>
-				<div class="form-group">
-					<div class="col-sm-offset-2 col-sm-10">
-						<%_.each(data.where,function(item){%>
-							<div class="checkbox">
-								<label>
-									<input type="checkbox" value="<%=item%>">
-									<%=item%>
-								</label>
-							</div>
-						<%})%>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-sm-2 control-label">When</label>
-					<div class="col-sm-10">
-						<input name="when" class="form-control" type="text" disabled placeholder="请选择自己方便的时间">
-					</div>
-				</div>
-				<div class="form-group">
-					<div class="col-sm-offset-2 col-sm-10">
-						<div class="" for="when" when-picker>This is the component for date picker</div>
-					</div>
-				</div>
-				<div class="form-group">
-					<div class="col-sm-offset-2 col-sm-10">
-						<button type="submit" class="btn btn-default">我要参加</button>
-					</div>
-				</div>
-			</form>
-		<%}else{%>
-			<form id="create-form" class="form-horizontal" onsubmit="return false;">
-				<div class="form-group">
-					<div class="col-sm-offset-2 col-sm-10">
-						<h2 class="form-control-static">我想发起一个聚会</h2>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-sm-2 control-label">噱头</label>
-					<div class="col-sm-10">
-						<input name="title" type="text" class="form-control" placeholder="请给聚会找个借口">
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-sm-2 control-label">Where</label>
-					<div id="where-root">
-						<div class="input-group col-sm-10">
-							<span name="add-where" class="input-group-addon btn btn-default"><i class="glyphicon glyphicon-plus"></i></span>
-							<input name="where" class="form-control" type="text" placeholder="&#8592;点击+,提交多个地方让小伙伴选择">
+			</div>
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10">
+					<%_.each(data.where,function(item){%>
+						<div class="checkbox">
+							<label>
+								<input type="checkbox" value="<%=item%>">
+								<%=item%>
+							</label>
 						</div>
+					<%})%>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-2 control-label">When</label>
+				<div class="col-sm-10">
+					<input name="when" class="form-control" type="text" disabled placeholder="请选择自己方便的时间">
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10">
+					<div class="" for="when" when-picker>This is the component for date picker</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10">
+					<button type="submit" class="btn btn-default">我要参加</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</script>
+<script id="create-party-template" type="text/html">
+	<div>
+		<form id="create-form" class="form-horizontal" onsubmit="return false;">
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10">
+					<h2 class="form-control-static">我想发起一个聚会</h2>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-2 control-label">噱头</label>
+				<div class="col-sm-10">
+					<input name="title" type="text" class="form-control" placeholder="请给聚会找个借口">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-2 control-label">Where</label>
+				<div id="where-root">
+					<div class="input-group col-sm-10">
+						<span name="add-where" class="input-group-addon btn btn-default"><i class="glyphicon glyphicon-plus"></i></span>
+						<input name="where" class="form-control" type="text" placeholder="&#8592;点击+,提交多个地方让小伙伴选择">
 					</div>
 				</div>
-				<div id="where-more" style="display:none">
-					<div class="form-group">
-						<div class="input-group col-sm-offset-2 col-sm-10">
-							<span name="del-where" class="input-group-addon btn btn-default"><i class="glyphicon glyphicon-minus"></i></span>
-							<input name="where" class="form-control" type="text">
-						</div>
-					</div>
-				</div>
+			</div>
+			<div id="where-more" style="display:none">
 				<div class="form-group">
-					<label class="col-sm-2 control-label">When</label>
-					<div class="col-sm-10">
-						<input name="when" class="form-control" type="text" disabled placeholder="点击日历&#8595;,提交多个时间让小伙伴选择">
+					<div class="input-group col-sm-offset-2 col-sm-10">
+						<span name="del-where" class="input-group-addon btn btn-default"><i class="glyphicon glyphicon-minus"></i></span>
+						<input name="where" class="form-control" type="text">
 					</div>
 				</div>
-				<div class="form-group">
-					<div class="col-sm-offset-2 col-sm-10">
-						<div class="" for="when" when-picker>This is the component for date picker</div>
-					</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-2 control-label">When</label>
+				<div class="col-sm-10">
+					<input name="when" class="form-control" type="text" disabled placeholder="点击日历&#8595;,提交多个时间让小伙伴选择">
 				</div>
-				<div class="form-group">
-					<label class="col-sm-2 control-label">我再说两句</label>
-					<div class="col-sm-10">
-						<textarea name="describe" class="form-control" placeholder="例如：具体时间，参与聚会需要注意的事项，或者大肆忽悠一下"></textarea>
-					</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10">
+					<div class="" for="when" when-picker>This is the component for date picker</div>
 				</div>
-				<div class="form-group">
-					<div class="col-sm-offset-2 col-sm-10">
-						<button type="submit" class="btn btn-default">就这么定了</button>
-					</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-2 control-label">我再说两句</label>
+				<div class="col-sm-10">
+					<textarea name="describe" class="form-control" placeholder="例如：具体时间，参与聚会需要注意的事项，或者大肆忽悠一下"></textarea>
 				</div>
-			</form>
-		<%}%>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10">
+					<button type="submit" class="btn btn-default">就这么定了</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</script>
+<script id="assume-party-template" type="text/html">
+	<div>
+		敲定这个聚会
 	</div>
 </script>
 <script src="js/jquery.min.js"></script>
