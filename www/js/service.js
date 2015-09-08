@@ -47,11 +47,14 @@
 				password:user.password
 			},function(res){
 				window.uid = res.uid;
+				window.username=user.username
 				callback(res);
 			});
 	};
 	
 	S.logout = function(user,callback){
+		delete(window.uid);
+		delete(window.username);
 		post('logout');
 	};
 

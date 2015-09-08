@@ -12,6 +12,16 @@
 	var showIndex = C.showIndex = function(param){
 		window.location.hash='#/list';
 	};
+	/**
+	 * 用于初始化用户信息模块，每次重载页面都会调用该方法
+	 */
+	var userInit = C.userInit = function(){
+		var userNavView = new V.Common();
+		userNavView.init($('#user-nav'),$('#user-nav-template'),{});
+		if (window.uid&&window.username){
+			userNavView.setData({username:window.username,login:true});
+		}
+	};
 
 	/** 以下是自定义视图载入方法及交互 **/
 	var login = C.login = function(param){
@@ -176,6 +186,7 @@
 						}
 						method = route[path];
 					}
+					userInit();
 					if (method && typeof method === 'function'){
 						method(param);
 					}else{
