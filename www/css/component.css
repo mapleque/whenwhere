@@ -55,3 +55,14 @@
 	min-width:0;
 }
 }
+
+.btn.attr-ele[checked]{
+	background-color:#5bc0de;
+	border-color:#46b8da;
+	color:#fff;
+}
+.btn.attr-ele:hover{
+	background-color:#31b0d5;
+	border-color:#269abc;
+	color:#fff;
+}

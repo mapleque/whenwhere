@@ -6,8 +6,62 @@
 	'use strict';
 	var P = window.P = {};
 	P.init = function($rootDom){
+		//where picker
+		$rootDom.find('[where-picker]').each(function(){
+			var $root=$(this);
+			var avilableList=[];
+			var avilableVal=$root.attr('avilable');
+			if (avilableVal){
+				avilableList=avilableVal.split(',');
+			}
+			var tpl=[
+				'<%_.map(data,function(e,i){%>',
+				'	<div class="attr-ele btn btn-default" value="<%=e%>"><%=e%></div>',
+				'<%})%>',
+			].join('');
+			var bindEvent=function(){
+				var $value_box=$('[name='+$root.attr('for')+']');
+				var checked_value=[];
+				$root.find('.attr-ele').click(function(){
+					var $ele = $(this);
+					var ischeck=$ele.attr('checked');
+					var value=$ele.attr('value');
+					if (ischeck){
+						checked_value=checked_value.filter(function(a){return a==value?'':a});
+						$ele.removeAttr('checked');
+					}else{
+						checked_value=checked_value.filter(function(a){return a==value?'':a});
+						checked_value.push(value);
+						$ele.attr('checked','true');
+					}
+					$value_box.val(checked_value.join(','));
+				});
+			};
+			$root.html(_.template(tpl)({data:avilableList}));
+			bindEvent();
+		});
+		//where picker end
+		//when picker
 		$rootDom.find('[when-picker]').each(function(){
 			var $root=$(this);
+			//获取可选择日期
+			var avilableList=[];
+			var avilableVal=$root.attr('avilable');
+			if (avilableVal){
+				avilableList=avilableVal.split(',');
+			}
+			var avilableMap={};
+			for (var i = 0 ; i < avilableList.length; i++){
+				avilableMap[avilableList[i]]=avilableList[i];
+			}
+			var isAvilable=function(val){
+				if (!avilableVal)
+					return true;
+				if (val in avilableMap){
+					return true;
+				}
+				return false;
+			};
 			//生成指定月份的日历数组
 			var genMonthCal = function(year,month){
 				//重载getMonthCal()
@@ -44,6 +98,7 @@
 				}
 				for (var i = totalDay ; i > 0 ; i--){
 					ret.push({
+							avilable:isAvilable(dateTool.toString()),
 							display:dateTool.getDate(),
 							day:dateTool.getDay(),
 							value:dateTool.toString(),
@@ -56,6 +111,7 @@
 					totalDay++;
 					dateTool.setDate(dateTool.getDate()-1);
 					ret.push({
+							avilable:isAvilable(dateTool.toString()),
 							display:dateTool.getDate(),
 							day:dateTool.getDay(),
 							value:dateTool.toString()
@@ -84,7 +140,11 @@
 				'			<%if (i%7==0){%>',
 				'				<div class="row cal-row">',
 				'			<%}%>',
-				'			<span class="col-sm-offset-1 col-sm-1 cal-ele btn btn-default <%=(e.day==0||e.day==6)?"weekend":""%> <%=e.not_other?"":"other-month"%>" value="<%=e.value%>"><%=e.display%></span>',
+				'			<%if (e.avilable){%>',
+					'			<span class="col-sm-offset-1 col-sm-1 cal-ele btn btn-default <%=(e.day==0||e.day==6)?"weekend":""%> <%=e.not_other?"":"other-month"%>" value="<%=e.value%>" avilable="<%=e.avilable%>"><%=e.display%></span>',
+				'			<%}else{%>',
+					'			<span class="col-sm-offset-1 col-sm-1 cal-ele <%=(e.day==0||e.day==6)?"weekend":""%> <%=e.not_other?"":"other-month"%>" value="<%=e.value%>"><%=e.display%></span>',
+				'			<%}%>',
 				'			<%if (i%7==6){%>',
 				'				</div>',
 				'			<%}%>',
@@ -96,7 +156,7 @@
 				//交互事件
 				var $value_box=$('[name='+$root.attr('for')+']');
 				var checked_value=[];
-				$root.find('.cal-ele').click(function(){
+				$root.find('.cal-ele[avilable=true]').click(function(){
 					var $ele = $(this);
 					var ischeck=$ele.attr('checked');
 					var value=$ele.attr('value');
@@ -129,5 +189,6 @@
 			};
 			init();
 		});
+		//when picker end
 	};
 })();

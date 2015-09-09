@@ -62,28 +62,4 @@
 	};
 	User.prototype = new BaseModelClass();
 
-	/**
-	 * class when
-	 * public
-	 * extend base model class
-	 */
-	var When = M.When = function(){
-		this.date = null;			//当前日期
-		this.selectMember = [];		//选择当前日期的参与人
-		this.isChoose = false;		//是否选择当前日期
-	};
-	When.prototype = new BaseModelClass();
-
-	/**
-	 * class when
-	 * public
-	 * extend base model class
-	 */
-	var Where = M.Where = function(){
-		this.addr = null;			//当前地点
-		this.selectMember = [];		//选择当前地点的参与人
-		this.isChoose = false;		//是否选择当前地点
-	};
-	Where.prototype = new BaseModelClass();
-
 })();

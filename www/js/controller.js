@@ -125,6 +125,13 @@
 					console.log(res);
 				});
 			});
+			$('#attend-form').on('submit',function(){
+				var when=$('input[name=when]').val();
+				var where=$('input[name=where]').val();
+				console.log('attend',when,where,window.uid);
+				//TODO 免登陆参与
+
+			});
 		};
 
 		S.getParty(param.pid, function(party){
