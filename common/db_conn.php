@@ -10,7 +10,27 @@ class DBConn extends mysqli
 
 	function __destruct()
 	{
+		if ($this->transaction)
+			parent::rollback();
 		parent::close();
+	}
+
+	public function beginTransaction()
+	{
+		if ($this->transaction && $this->error_callback !== null)
+			call_user_func($this->error_callback, 'Transaction re-entered');
+		$this->autocommit(FALSE);
+		$this->transaction = true;
+	}
+
+	public function endTransaction($commit)
+	{
+		if ($commit)
+			parent::commit();
+		else
+			parent::rollback();
+		parent::autocommit(TRUE);
+		$this->transaction = false;
 	}
 
 	public function select($query, $bind = null)

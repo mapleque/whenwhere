@@ -31,6 +31,18 @@
 	padding-left:9px;
 	padding-right:9px;
 	min-width:36px;
+	position:relative;
+	opacity:0.8;
+}
+.cal-ratio{
+	position:absolute;
+	top:0;
+	left:0;
+	background-color:#0f0;
+	height:100%;
+	opacity:0.2;
+	border-radius: 4px;
+	z-index:-1;
 }
 .cal-ele.weekend{
 	color:red;
@@ -56,6 +68,10 @@
 }
 }
 
+.attr-ele{
+	position:relative;
+	opacity:0.8;
+}
 .btn.attr-ele[checked]{
 	background-color:#5bc0de;
 	border-color:#46b8da;
@@ -65,4 +81,14 @@
 	background-color:#31b0d5;
 	border-color:#269abc;
 	color:#fff;
+}
+.attr-ratio{
+	position:absolute;
+	top:0;
+	left:0;
+	background-color:#0f0;
+	height:100%;
+	opacity:0.2;
+	border-radius: 4px;
+	z-index:-1;
 }

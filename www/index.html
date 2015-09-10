@@ -154,7 +154,7 @@
 				<label class="col-sm-2 control-label">谁要来</label>
 				<div class="col-sm-10 form-control-static">
 					<%_.each(data.member,function(item){%>
-						<span><%=item%></span>
+						<span><%=item.user_name%></span>
 					<%})%>
 				</div>
 			</div>
@@ -166,7 +166,7 @@
 			</div>
 			<div class="form-group">
 				<div class="col-sm-offset-2 col-sm-10">
-					<div class="" for="where" where-picker avilable="<%=data.where%>">
+					<div class="" for="where" where-picker avilable="<%=data.where%>" data-selected="<%=encodeURIComponent(JSON.stringify(data.memberWhere))%>">
 						This is the where picker
 					</div>
 				</div>
@@ -179,7 +179,7 @@
 			</div>
 			<div class="form-group">
 				<div class="col-sm-offset-2 col-sm-10">
-					<div class="" for="when" when-picker avilable="<%=data.when%>">
+					<div class="" for="when" when-picker avilable="<%=data.when%>" data-selected="<%=encodeURIComponent(JSON.stringify(data.memberWhen))%>">
 						This is the component for date picker
 					</div>
 				</div>

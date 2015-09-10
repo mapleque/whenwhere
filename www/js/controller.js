@@ -130,6 +130,9 @@
 				var where=$('input[name=where]').val();
 				console.log('attend',when,where,window.uid);
 				//TODO 免登陆参与
+				S.attendParty(param.pid,when.split(','),where.split(','),function(res){
+					alert('提交成功');
+				});
 
 			});
 		};

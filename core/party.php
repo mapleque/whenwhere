@@ -1,10 +1,69 @@
 <?php
 
 /**
- * a party class
+ * party
  */
 class Party
 {
+	public static function getMemberWhen($pid)
+	{
+		$sql = 'SELECT user_id, one_value
+		FROM when_party
+		WHERE party_id = ?';
+		$bind = [ $pid ];
+		return DB::select($sql, $bind);
+	}
+
+	public static function getMemberWhere($pid)
+	{
+		$sql = 'SELECT user_id, one_value
+		FROM where_party
+		WHERE party_id = ?';
+		$bind = [ $pid ];
+		return DB::select($sql, $bind);
+	}
+
+	public static function getMember($pid)
+	{
+		$sql = '
+			SELECT u.username AS user_name, u.one_key AS user_id, u.one_value AS user_info
+			FROM attend_party AS a INNER JOIN user AS u
+			ON u.one_key = a.user_id
+			WHERE a.party_id = ?
+		';
+		$bind = [ $pid ];
+		return DB::select($sql, $bind);
+	}
+
+	public static function attendOne($uid, $pid, $when, $where)
+	{
+		DB::beginTransaction();
+		$sql = 'INSERT INTO attend_party (one_key, party_id, user_id, one_value) VALUES (?, ?, ?, ?)
+			ON DUPLICATE KEY UPDATE one_value = ?';
+		$bind = [md5(time()), $pid, $uid, '{}', '{}'];
+		$ret = DB::insert($sql, $bind) >=0;
+		if (!$ret) {
+			return false;
+		}
+
+		$sql = 'INSERT INTO where_party (one_key, party_id, user_id, one_value) VALUES (?, ?, ?, ?)
+			ON DUPLICATE KEY UPDATE one_value = ?';
+		$bind = [md5(time()), $pid, $uid, $where, $where];
+		$ret = DB::insert($sql, $bind) >=0;
+		if (!$ret) {
+			return false;
+		}
+
+		$sql = 'INSERT INTO when_party (one_key, party_id, user_id, one_value) VALUES (?, ?, ?, ?)
+			ON DUPLICATE KEY UPDATE one_value = ?';
+		$bind = [md5(time()), $pid, $uid, $when, $when];
+		$ret = DB::insert($sql, $bind) >=0;
+		if (!$ret) {
+			return false;
+		}
+		DB::endTransaction(true);
+		return true;
+	}
 
 	public static function getOne($key)
 	{

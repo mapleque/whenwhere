@@ -43,6 +43,9 @@
 		this.when = [];				//拟聚会日期
 		this.where = [];			//拟聚会地点
 		this.isClose = false;		//是否已关闭
+
+		this.memberWhen = [];		//参与人允许时间
+		this.memberWhere = [];		//参与人推荐地点
 	};
 	Party.prototype = new BaseModelClass();
 

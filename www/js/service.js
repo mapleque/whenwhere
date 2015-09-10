@@ -173,11 +173,17 @@
 	/**
 	 * Only for attender
 	 * @param
-	 *		Party
+	 *		pid=>party id
+	 *		value=>json array
 	 * @return
 	 *		boolean
 	 */
-	S.attendParty = function(party){
+	S.attendParty = function(pid,when,where,callback){
+		if (pid && when && where){
+			post('attend_party',{pid:pid,when:JSON.stringify(when),where:JSON.stringify(where)},function(res){
+				callback(res);
+			});
+		}
 	};
 
 })();

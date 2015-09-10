@@ -14,9 +14,41 @@
 			if (avilableVal){
 				avilableList=avilableVal.split(',');
 			}
+
+			var selectedMap={};
+			var selectedVal=$root.attr('data-selected');
+			if (selectedVal && selectedVal !== 'undefined'){
+				var jsonstr=decodeURIComponent(selectedVal);
+				var selectedList=JSON.parse(jsonstr)
+				_.map(selectedList,function(e,i){
+					var item = JSON.parse(e.one_value);
+					_.map(item,function(se,si){
+						if (!(se in selectedMap)){
+							selectedMap[se]=0;
+						}
+						selectedMap[se]+=1;
+					});
+				});
+				for (var key in selectedMap){
+					var ratio=selectedMap[key]/selectedList.length;
+					ratio=ratio<0.05?0.05:ratio;
+					selectedMap[key]=ratio;
+				}
+			}
+			var showList=[];
+			_.map(avilableList,function(e,i){
+				showList.push({
+					value:e,
+					ratio:selectedMap[e]||0.05
+				});
+			});
+
 			var tpl=[
 				'<%_.map(data,function(e,i){%>',
-				'	<div class="attr-ele btn btn-default" value="<%=e%>"><%=e%></div>',
+				'	<div class="attr-ele btn btn-default" value="<%=e.value%>">',
+				'		<div class="attr-ratio" style="width:<%=e.ratio*100%>%"></div>',
+				'		<span class="attr-value"><%=e.value%></span>',
+				'	</div>',
 				'<%})%>',
 			].join('');
 			var bindEvent=function(){
@@ -37,7 +69,7 @@
 					$value_box.val(checked_value.join(','));
 				});
 			};
-			$root.html(_.template(tpl)({data:avilableList}));
+			$root.html(_.template(tpl)({data:showList}));
 			bindEvent();
 		});
 		//where picker end
@@ -62,6 +94,30 @@
 				}
 				return false;
 			};
+
+			var selectedMap={};
+			var selectedVal=$root.attr('data-selected');
+			if (selectedVal && selectedVal !== 'undefined'){
+				var jsonstr=decodeURIComponent(selectedVal);
+				var selectedList=JSON.parse(jsonstr)
+				_.map(selectedList,function(e,i){
+					var item = JSON.parse(e.one_value);
+					_.map(item,function(se,si){
+						if (!(se in selectedMap)){
+							selectedMap[se]=0;
+						}
+						selectedMap[se]+=1;
+					});
+				});
+				for (var key in selectedMap){
+					var ratio=selectedMap[key]/selectedList.length;
+					ratio=ratio<0.05?0.05:ratio;
+					selectedMap[key]=ratio;
+				}
+			}
+			var getRatio = function(val){
+				return selectedMap[val]||0.05;
+			}
 			//生成指定月份的日历数组
 			var genMonthCal = function(year,month){
 				//重载getMonthCal()
@@ -98,6 +154,7 @@
 				}
 				for (var i = totalDay ; i > 0 ; i--){
 					ret.push({
+							ratio:getRatio(dateTool.toString()),
 							avilable:isAvilable(dateTool.toString()),
 							display:dateTool.getDate(),
 							day:dateTool.getDay(),
@@ -141,7 +198,10 @@
 				'				<div class="row cal-row">',
 				'			<%}%>',
 				'			<%if (e.avilable){%>',
-					'			<span class="col-sm-offset-1 col-sm-1 cal-ele btn btn-default <%=(e.day==0||e.day==6)?"weekend":""%> <%=e.not_other?"":"other-month"%>" value="<%=e.value%>" avilable="<%=e.avilable%>"><%=e.display%></span>',
+					'			<span class="col-sm-offset-1 col-sm-1 cal-ele btn btn-default <%=(e.day==0||e.day==6)?"weekend":""%> <%=e.not_other?"":"other-month"%>" value="<%=e.value%>" avilable="<%=e.avilable%>">',
+				'					<%=e.display%>',
+				'					<div class="cal-ratio" style="width:<%=e.ratio*100%>%"></div>',
+				'				</span>',
 				'			<%}else{%>',
 					'			<span class="col-sm-offset-1 col-sm-1 cal-ele <%=(e.day==0||e.day==6)?"weekend":""%> <%=e.not_other?"":"other-month"%>" value="<%=e.value%>"><%=e.display%></span>',
 				'			<%}%>',
