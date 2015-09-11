@@ -18,8 +18,8 @@
 	var userInit = C.userInit = function(){
 		var userNavView = new V.Common();
 		userNavView.init($('#user-nav'),$('#user-nav-template'),{});
-		if (window.uid&&window.username){
-			userNavView.setData({username:window.username,login:true});
+		if (U.getUid()&&U.getUsername()){
+			userNavView.setData({username:U.getUsername(),login:true});
 		}
 	};
 
@@ -128,7 +128,7 @@
 			$('#attend-form').on('submit',function(){
 				var when=$('input[name=when]').val();
 				var where=$('input[name=where]').val();
-				console.log('attend',when,where,window.uid);
+				console.log('attend',when,where,U.getUid());
 				//TODO 免登陆参与
 				S.attendParty(param.pid,when.split(','),where.split(','),function(res){
 					alert('提交成功');
@@ -139,13 +139,21 @@
 
 		S.getParty(param.pid, function(party){
 			if (party){
-				if (window.uid && window.uid == party.author){
+				var disabled = false;
+				if (U.getUid() && U.getUid() == party.author){
 					partyView.init($('#content'),$('#assume-party-template'),{});
+					disabled = true;
 				}else{
 					partyView.init($('#content'),$('#attend-party-template'),{});
 				}
+				_.map(party.member, function(e,i){
+					if (U.getUid() == e.user_id) {
+						disabled = true;
+					}
+				});
+				party.disabled = disabled;
 				partyView.setData(party);
-			}else if (window.uid){
+			}else if (U.getUid()){
 				partyView.init($('#content'),$('#create-party-template'),{});
 			}else{
 				partyView.init($('#content'),$('#error-template'),{msg:'这个聚会不存在,登陆后可以创建新的聚会'});

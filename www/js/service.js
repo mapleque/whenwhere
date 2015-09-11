@@ -46,15 +46,15 @@
 				username:user.username,
 				password:user.password
 			},function(res){
-				window.uid = res.uid;
-				window.username=user.username
+				U.setUid(res.uid);
+				U.setUsername(user.username);
 				callback(res);
 			});
 	};
 	
 	S.logout = function(user,callback){
-		delete(window.uid);
-		delete(window.username);
+		U.rmUid();
+		U.rmUsername();
 		post('logout');
 	};
 
@@ -73,7 +73,7 @@
 	 */
 	S.getPartyKey = function(callback){
 		post('get_userid',function(data){
-			window.uid = data.uid;
+			U.setUid(data.uid);
 			post('new_party_key',function(res){
 				callback(res.key);
 			});
@@ -159,8 +159,8 @@
 	 */
 	S.setParty = function(party, callback){
 		if (party && party.pid){
-			if (window.uid){
-				party.author = window.uid;
+			if (U.getUid()){
+				party.author = U.getUid();
 				post('set_party',{key:party.pid,value:party.toJsonStr()},function(res){
 					callback(res);
 				});

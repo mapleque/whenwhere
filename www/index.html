@@ -166,7 +166,7 @@
 			</div>
 			<div class="form-group">
 				<div class="col-sm-offset-2 col-sm-10">
-					<div class="" for="where" where-picker avilable="<%=data.where%>" data-selected="<%=encodeURIComponent(JSON.stringify(data.memberWhere))%>">
+					<div class="" for="where" where-picker avilable="<%=data.where%>" data-selected="<%=encodeURIComponent(JSON.stringify(data.memberWhere))%>" user-controll="<%=!data.disabled%>">
 						This is the where picker
 					</div>
 				</div>
@@ -179,7 +179,7 @@
 			</div>
 			<div class="form-group">
 				<div class="col-sm-offset-2 col-sm-10">
-					<div class="" for="when" when-picker avilable="<%=data.when%>" data-selected="<%=encodeURIComponent(JSON.stringify(data.memberWhen))%>">
+					<div class="" for="when" when-picker avilable="<%=data.when%>" data-selected="<%=encodeURIComponent(JSON.stringify(data.memberWhen))%>" user-controll="<%=!data.disabled%>">
 						This is the component for date picker
 					</div>
 				</div>
@@ -204,6 +204,12 @@
 				<label class="col-sm-2 control-label">噱头</label>
 				<div class="col-sm-10">
 					<input name="title" type="text" class="form-control" placeholder="请给聚会找个借口">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-2 control-label">谁要来</label>
+				<div class="col-sm-10 form-control-static">
+					<span>快把本页分享给要邀请的小伙伴们吧</span>
 				</div>
 			</div>
 			<div class="form-group">
@@ -250,12 +256,65 @@
 </script>
 <script id="assume-party-template" type="text/html">
 	<div>
-		敲定这个聚会
+		<form id="attend-form" class="form-horizontal" onsubmit="return false;">
+			<input name="pid" type="hidden" value="<%=data.pid?data.pid:''%>">
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10">
+					<h2 class="form-control-static">我想参加这个聚会</h2>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-2 control-label">噱头</label>
+				<div class="col-sm-10">
+					<input name="title" type="text" class="form-control" placeholder="just give me a title" disabled value="<%=data.title%>">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-2 control-label">谁要来</label>
+				<div class="col-sm-10 form-control-static">
+					<%_.each(data.member,function(item){%>
+						<span><%=item.user_name%></span>
+					<%})%>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-2 control-label">Where</label>
+				<div class="col-sm-10">
+					<input name="where" class="form-control" type="text" disabled placeholder="请选择最终决定的地方">
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10">
+					<div class="" for="where" where-picker avilable="<%=data.where%>" data-selected="<%=encodeURIComponent(JSON.stringify(data.memberWhere))%>" user-controll="<%=!data.disabled%>">
+						This is the where picker
+					</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-2 control-label">When</label>
+				<div class="col-sm-10">
+					<input name="when" class="form-control" type="text" disabled placeholder="请选择最终决定的时间">
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10">
+					<div class="" for="when" when-picker avilable="<%=data.when%>" data-selected="<%=encodeURIComponent(JSON.stringify(data.memberWhen))%>" user-controll="<%=!data.disabled%>">
+						This is the component for date picker
+					</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10">
+					<button type="submit" class="btn btn-default">就这么定了</button>
+				</div>
+			</div>
+		</form>
 	</div>
 </script>
 <script src="js/jquery.min.js"></script>
 <script src="js/underscore.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
+<script src="js/util.js"></script>
 <script src="js/component.js"></script>
 <script src="js/model.js"></script>
 <script src="js/service.js"></script>

@@ -168,6 +168,7 @@
 					totalDay++;
 					dateTool.setDate(dateTool.getDate()-1);
 					ret.push({
+							ratio:getRatio(dateTool.toString()),
 							avilable:isAvilable(dateTool.toString()),
 							display:dateTool.getDate(),
 							day:dateTool.getDay(),
